@@ -34,6 +34,8 @@ Route::middleware('auth')->group(
         Route::get('/barang', [BarangController::class, 'index'])->name('barang-index');
         Route::get('/barang/json', [BarangController::class, 'ajaxIndex'])->name('barang-ajax-index');
         Route::get('/barang/add/komputer', [BarangController::class, 'createKomputer'])->name('barang-create-komputer');
+        Route::post('/barang/store/komputer', [BarangController::class, 'storeKomputer'])->name('barang-store-komputer');
+
         Route::get('/barang/add/hp', [BarangController::class, 'createHp'])->name('barang-create-hp');
         Route::get('/barang/{id}', [BarangController::class, 'edit'])->name('barang-edit');
         Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang-destroy');

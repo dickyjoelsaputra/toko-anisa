@@ -41,6 +41,12 @@ class BarangController extends Controller
         $satuans = Satuan::get();
         return view('barang.create-komputer', ['satuans' => $satuans]);
     }
+    public function storeKomputer(Request $request)
+    {
+        return response()->json($request->all());
+    }
+
+
     public function createHp()
     {
         return view('barang.create-hp');

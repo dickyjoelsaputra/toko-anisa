@@ -91,16 +91,21 @@
                 </div>
                 <hr>
                 <div class="d-flex flex-column align-items-center">
-                    <button type="button" id="proses" class="btn btn-success mt-3">Proses Barang</button>
+                    <button type="button" id="tambah" class="btn btn-success mt-3">Tambah Barang</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="card mb-5">
+    <div class="card">
         <div class="card-body">
             <h4>Result</h4>
             <div class="row row-cols-4 okcard gutter">
+            </div>
+
+            <hr>
+            <div class="d-flex flex-column align-items-center">
+                <button type="button" id="proses" class="btn btn-success mt-3 mb-5">Proses Barang</button>
             </div>
         </div>
     </div>
@@ -166,6 +171,8 @@
                 $('#deleteBtn').hide();
             });
 
+
+
             // UNTUK TAMBAH DAN HARGA
             $('#tambahharga').click(function() {
                 var inputGroup = $(`
@@ -200,7 +207,7 @@
                 $(this).closest('.input-group').remove();
             });
 
-            $(document).on('click', '#proses', function(event) {
+            $(document).on('click', '#tambah', function(event) {
                 var kode = $("#kode").val();
                 var nama = $("#nama").val();
                 var satuanid = $('select[name="satuan"]').val();
@@ -222,16 +229,13 @@
                     1]; // Mendapatkan data base64 (tanpa "data:image/png;base64,")
                 var fileName = "image.png"; // Nama file yang diinginkan
 
-                console.log(kode, nama, satuanid, satuanvalue)
-                console.log(arrayminhar);
-                console.log("Src:", src);
-                console.log("File Name:", fileName);
-
-
-                var card = `
+                card = `
                 <div class="col">
                     <div class="card border border-secondary">
                         <img src="${src}" class="card-img-top" alt="${fileName}">
+                            <div class="cross-icon">
+                                <i class="fas fa-times"></i>
+                            </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
                                 <h5 class="card-title"><b>Nama : </b>${nama}</h5>
@@ -252,18 +256,32 @@
                                     </thead>
                                     <tbody>
                                         ${arrayminhar.map(item => `
-                                                <tr>
-                                                    <td>${item.minimal}</td>
-                                                    <td>${item.harga}</td>
-                                                </tr>
-                                            `).join('')}
+                                                                <tr>
+                                                                <td>${item.minimal}</td>
+                                                                <td>${item.harga}</td>
+                                                                </tr>
+                                                                `).join('')}
                                     </tbody>
                                 </table>
                             </li>
                         </ul>
                     </div>
                 </div>
-        `;
+                 `;
+
+                var objectData = {
+                    kode: kode,
+                    nama: nama,
+                    satuanid: satuanid,
+                    satuanvalue: satuanvalue,
+                    minhar: arrayminhar,
+                    src: src,
+                    filename: fileName
+                }
+
+                finaldata.push(objectData)
+
+                // console.log(finaldata)
 
                 var cardcontainer = $(".okcard")
                 cardcontainer.prepend(card);
@@ -276,8 +294,39 @@
                 $('.minhar:not(:first)').remove();
                 $('#photoPreview').empty();
                 $('#deleteBtn').hide();
-
             });
+
+            // HAPUS BAWAH
+            $(document).on('click', '.cross-icon', function() {
+                var $col = $(this).closest('.col');
+                $col.remove();
+
+                var src = $col.find('.card-img-top').attr('src');
+                finaldata = finaldata.filter(function(item) {
+                    return item.src !== src;
+                });
+
+                // console.log(finaldata);
+            });
+
+            var finaldata = []
+            var card;
+
+            $(document).on('click', '#proses', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '{{ route('barang-store-komputer') }}',
+                    method: 'POST',
+                    data: finaldata,
+                    success: function(response) {
+                        console.log('Data berhasil dikirim:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error dalam mengirim data:', error);
+                    }
+                });
+            });
+
         });
     </script>
     <style>
@@ -336,6 +385,19 @@
 
         .okcard .col {
             padding: 10px;
+        }
+
+        .cross-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 @endsection

@@ -135,7 +135,6 @@
                                     "table tbody").html());
                             },
                             error: function(xhr) {
-
                                 console.log(xhr
                                     .responseText
                                 );
