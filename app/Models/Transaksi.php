@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaksi extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+
+    protected $table = 'tansaksis';
 
     protected $fillable = [
         'total', 'user_id'

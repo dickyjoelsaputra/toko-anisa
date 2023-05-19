@@ -11,6 +11,9 @@ class Satuan extends Model
 {
     use HasFactory;
 
+
+    protected $table = 'satuans';
+
     protected $fillable = [
         'nama', 'alias'
     ];

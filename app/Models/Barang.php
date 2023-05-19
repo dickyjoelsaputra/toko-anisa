@@ -10,6 +10,8 @@ class Barang extends Model
 {
     use HasFactory;
 
+    protected $table = 'barangs';
+
     protected $fillable = [
         'nama', 'kode', 'manual', 'gambar', 'satuan_id'
     ];
@@ -17,5 +19,10 @@ class Barang extends Model
     public function satuans()
     {
         return $this->belongsTo(Satuan::class, 'satuan_id', 'id');
+    }
+
+    public function hargas()
+    {
+        return $this->hasMany(Harga::class, 'barang_id', 'id');
     }
 }

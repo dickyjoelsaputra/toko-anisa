@@ -5,3 +5,12 @@
                 <b>Version</b> 1.0.0
             </div>
         </footer>
+
+        <style>
+            .main-footer {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>

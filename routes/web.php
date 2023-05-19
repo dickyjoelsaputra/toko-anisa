@@ -28,10 +28,15 @@ Route::middleware('auth')->group(
     function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard-index');
         Route::get('/kasir', [KasirController::class, 'index'])->name('kasir-index');
+
         Route::get('/user', [UserController::class, 'index'])->name('user-index');
 
         Route::get('/barang', [BarangController::class, 'index'])->name('barang-index');
         Route::get('/barang/json', [BarangController::class, 'ajaxIndex'])->name('barang-ajax-index');
+        Route::get('/barang/add/komputer', [BarangController::class, 'createKomputer'])->name('barang-create-komputer');
+        Route::get('/barang/add/hp', [BarangController::class, 'createHp'])->name('barang-create-hp');
+        Route::get('/barang/{id}', [BarangController::class, 'edit'])->name('barang-edit');
+        Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang-destroy');
 
         Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan-index');
         Route::post('/satuan', [SatuanController::class, 'store'])->name('satuan-store');
