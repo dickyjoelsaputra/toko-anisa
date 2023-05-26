@@ -20,7 +20,7 @@
                 <tbody>
                     @foreach ($satuans as $satuan)
                         <tr>
-                            <td>{{ $satuan->id }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $satuan->nama }}</td>
                             <td>{{ $satuan->alias }}</td>
                             <td><button class="btn btn-danger button-hapus" data-id="{{ $satuan->id }}">Hapus</button></td>

@@ -8,6 +8,8 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            <div class="toast-container">
+            </div>
             <form>
                 <div class="row">
                     <div class="col-sm">
@@ -116,12 +118,16 @@
     <script>
         $(document).ready(function() {
 
+            $('.harga').mask('000.000.000', {
+                reverse: true
+            });
             $("#kode").focus();
 
             // Select2
             $('.select2').select2({
                 theme: 'bootstrap4'
             })
+            // =============== KAMERA START =======================
             // Akses kamera
             navigator.mediaDevices.getUserMedia({
                     video: true
@@ -171,7 +177,7 @@
                 $('#deleteBtn').hide();
             });
 
-
+            // =============== KAMERA END ==========================
 
             // UNTUK TAMBAH DAN HARGA
             $('#tambahharga').click(function() {
@@ -199,6 +205,13 @@
                                 {{-- ICON --}}
                             </div>
                             `);
+
+                inputGroup.find('.harga').each(function() {
+                    $(this).mask('000.000.000', {
+                        reverse: true
+                    });
+                });
+
                 $(".my-wrapper").append(inputGroup);
             });
 
@@ -255,12 +268,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        ${arrayminhar.map(item => `
-                                                                <tr>
-                                                                <td>${item.minimal}</td>
-                                                                <td>${item.harga}</td>
-                                                                </tr>
-                                                                `).join('')}
+                                        ${arrayminhar.map(item => `<tr><td>${item.minimal}</td><td>${item.harga}</td></tr>`).join('')}
                                     </tbody>
                                 </table>
                             </li>
@@ -313,23 +321,131 @@
             var card;
 
             $(document).on('click', '#proses', function(event) {
+                console.log("output", finaldata);
                 event.preventDefault();
                 $.ajax({
                     url: '{{ route('barang-store-komputer') }}',
                     method: 'POST',
-                    data: finaldata,
+                    data: {
+                        finalData: finaldata
+                    },
                     success: function(response) {
                         console.log('Data berhasil dikirim:', response);
+                        showToast(response.message, response.status);
+                        $('.row-cols-4.okcard .col').each(function() {
+                            $(this).empty(); // Menghapus konten dalam col
+                            $(this).remove(); // Menghapus col itu sendiri
+                        });
+                        $("#kode").focus();
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error dalam mengirim data:', error);
+                        var errorResponse = JSON.parse(xhr.responseText);
+                        var errors = errorResponse.error;
+                        var errorMessages = '<ul>';
+
+                        // Loop melalui setiap kunci kesalahan
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                // Ambil pesan kesalahan untuk kunci tersebut
+                                var errorMessage = errors[key][0];
+                                errorMessages += '<li>' + errorMessage + '</li>';
+                            }
+                        }
+
+                        errorMessages += '</ul>';
+
+                        showToast(errorMessages, 'error');
+                        $('.row-cols-4.okcard .col').each(function() {
+                            $(this).empty(); // Menghapus konten dalam col
+                            $(this).remove(); // Menghapus col itu sendiri
+                        });
+                        $("#kode").focus();
                     }
                 });
             });
 
+
+
+            // TOAST
+            function showToast(message, type) {
+                var toastContainer = $(".toast-container");
+
+                var toast = `
+                    <div class="toast ${type === 'success' ? 'bg-green' : 'bg-red'}" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                        <strong class="me-auto">${type === 'success' ? 'success' : 'error'}</strong>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                `
+                // Buat elemen jQuery dari toast
+                var $toast = $(toast);
+
+                // Tambahkan toast ke dalam container
+                toastContainer.append($toast);
+
+                // Inisialisasi objek Toast Bootstrap
+                var toast = new bootstrap.Toast($toast[0]);
+
+                // Tampilkan toast
+                toast.show();
+
+
+                // Sembunyikan toast setelah 3 detik
+                setTimeout(function() {
+                    toast.hide();
+                    setTimeout(function() {
+                        $toast.remove();
+                    }, 500); // Waktu tambahan untuk animasi sebelum menghapus elemen
+                }, 15000);
+            }
         });
     </script>
     <style>
+        /* TOAST START */
+        .toast-body ul {
+            list-style-type: disc;
+            margin: 0;
+            padding: 0 0 0 20px;
+        }
+
+        .toast-body ul li {
+            margin-bottom: 5px;
+        }
+
+        .bg-green {
+            background-color: greenyellow;
+        }
+
+        .bg-red {
+            background-color: red;
+        }
+
+        .toast {
+            opacity: 0;
+            animation: fade-in 2s ease-in-out forwards;
+        }
+
+        .fade {
+            transition-duration: 4s;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* TOAST END */
+
+        /* KAMERA START */
+
         .camera-container {
             position: relative;
             padding-bottom: 100%;
@@ -365,6 +481,9 @@
             height: auto;
         }
 
+        /* KAMERA END */
+
+
         .input-group-addon {
             border-left-width: 0;
             border-right-width: 0;
@@ -398,6 +517,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* TOAST */
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
         }
     </style>
 @endsection

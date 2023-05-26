@@ -54,17 +54,18 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('user-index') }}" class="nav-link">
-                                <i class="nav-icon far fa-plus-square"></i>
-                                <p>User</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{ route('satuan-index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>Satuan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('user-index') }}" class="nav-link">
+                                <i class="nav-icon far fa-plus-square"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

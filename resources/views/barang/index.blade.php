@@ -38,7 +38,7 @@
                 ajax: "{{ route('barang-ajax-index') }}",
                 columns: [{
                         data: 'id',
-                        name: 'id'
+                        name: 'id',
                     },
                     {
                         data: 'nama',
@@ -50,7 +50,16 @@
                     },
                     {
                         data: 'manual',
-                        name: 'manual'
+                        name: 'manual',
+                        render: function(data) {
+                            if (data === 0) {
+                                return 'Tidak';
+                            } else if (data === 1) {
+                                return 'Ya';
+                            } else {
+                                return '';
+                            }
+                        }
                     },
                     {
                         data: 'gambar',
@@ -59,7 +68,8 @@
                         searchable: false,
                         render: function(data, type, full, meta) {
                             if (type === 'display') {
-                                return '<img src="' + data +
+                                return '<img src="' + '{{ asset('storage/') }}' + '/' +
+                                    data +
                                     '" alt="" class="img-thumbnail" style="object-fit: contain; width: 100px; height: 100px;">';
                             }
                             return data;
@@ -70,6 +80,7 @@
                         name: 'harga',
                         orderable: false,
                         searchable: false,
+
                     },
                     {
                         data: 'satuans.alias',
@@ -100,6 +111,14 @@
                     },
 
                 ]
+            });
+
+            $('#barang-table').on('draw.dt', function() {
+                $('.harga-tbl').each(function() {
+                    $(this).mask('000.000.000', {
+                        reverse: true
+                    });
+                });
             });
         });
     </script>
