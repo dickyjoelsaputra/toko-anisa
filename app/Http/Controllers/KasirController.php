@@ -23,13 +23,14 @@ class KasirController extends Controller
     public function search(Request $request)
     {
         $searchText = $request->input('search');
-        $dataArray = $request->input('dataarray');
+        // $dataArray = $request->input('dataarray');
         // ->orWhere('id', '!=', $dataArray)
 
         $barang = Barang::where('nama', 'like', "$searchText%")
             ->orWhere('kode', 'like', "$searchText%")
             ->get();
 
-        return response()->json(['results' => $barang, 'results2' => $dataArray]);
+        return response()->json(['results' => $barang]);
+        // return response()->json(['results' => $barang, 'results2' => $dataArray]);
     }
 }

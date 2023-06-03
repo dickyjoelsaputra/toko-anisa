@@ -74,7 +74,7 @@
                     method: "POST",
                     data: {
                         search: searchText
-                        dataarray: dataArray
+                        // dataarray: dataArray
                     },
                     success: function(response) {
                         var results = response.results;
@@ -111,8 +111,8 @@
                     method: "GET",
                     success: function(response) {
                         var result = response.results
-                        var result2 = response.results2
-                        console.log(result2)
+                        // var result2 = response.results2
+                        // console.log(result2)
                         // console.log(response)
                         $(".dropdown-menu-kasir").hide();
                         var newRow = `<tr>
