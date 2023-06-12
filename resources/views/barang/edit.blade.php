@@ -7,7 +7,6 @@
 
 @section('content')
 <div class="card">
-    {{ $barang }}
     <div class="card-body">
         <div class="toast-container">
         </div>

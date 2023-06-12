@@ -17,9 +17,12 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
+
         $transaksi = Transaksi::create([
             'user_id' => Auth()->user()->id,
-            'total' => intval(str_replace(".", "", $request->total))
+            'total' => intval(str_replace(".", "", $request->total)),
+            'uangpembeli' => intval(str_replace(".", "", $request->uangpembeli)),
+            'kembalian' => intval(str_replace(".", "", $request->kembalian))
         ]);
 
         foreach ($request->dataTransaksi as $barang) {
@@ -32,6 +35,6 @@ class TransaksiController extends Controller
             ]);
         }
 
-        return response()->json(['results' => $request->all()]);
+        return response()->json(['status' => 'success', 'message' => 'Transaksi Berhasil di proses']);
     }
 }

@@ -49,6 +49,7 @@ Route::middleware('auth')->group(
         Route::get('/barang/{id}', [BarangController::class, 'edit'])->name('barang-edit');
         Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang-update');
         Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang-destroy');
+        Route::get('/barang-print/{id}', [BarangController::class, 'print'])->name('barang-print');
 
         // SATUAN
         Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan-index');

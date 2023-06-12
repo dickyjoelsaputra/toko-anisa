@@ -205,6 +205,8 @@
                     success: function(response) {
                         console.log('Data berhasil dikirim:', response);
                         showToast(response.message, response.status);
+                        $("#kode").val('');
+                        $("#nama").val('');
                         $("#kode").focus();
                     },
                     error: function(xhr, status, error) {

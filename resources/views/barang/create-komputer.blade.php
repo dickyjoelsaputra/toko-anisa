@@ -364,25 +364,16 @@
                         </div>
                     </div>
                 `
-                // Buat elemen jQuery dari toast
                 var $toast = $(toast);
-
-                // Tambahkan toast ke dalam container
                 toastContainer.append($toast);
-
-                // Inisialisasi objek Toast Bootstrap
                 var toast = new bootstrap.Toast($toast[0]);
-
-                // Tampilkan toast
                 toast.show();
 
-
-                // Sembunyikan toast setelah 3 detik
                 setTimeout(function() {
                     toast.hide();
                     setTimeout(function() {
                         $toast.remove();
-                    }, 500); // Waktu tambahan untuk animasi sebelum menghapus elemen
+                    }, 500);
                 }, 15000);
             }
         });
@@ -424,6 +415,13 @@
         to {
             opacity: 1;
         }
+    }
+
+    .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
     }
 
     /* TOAST END */
@@ -503,13 +501,6 @@
         justify-content: center;
     }
 
-    /* TOAST */
 
-    .toast-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-    }
 </style>
 @endsection

@@ -6,27 +6,6 @@
 <!-- Default box -->
 <div class="card">
     <div class="card-body">
-        <div class="row">
-            <div class="form-group">
-                <label>Start Date:</label>
-                <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate">
-                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>End Date:</label>
-                <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                    <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate">
-                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary">Primary</button>
-        </div>
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
@@ -34,6 +13,8 @@
                     <th>Waktu Transaksi</th>
                     <th>User</th>
                     <th>Total Transaksi</th>
+                    <th>Uang Pembeli</th>
+                    <th>Kembalian</th>
                     {{-- <th style="width: 20%;">Action</th> --}}
                 </tr>
             </thead>
@@ -44,9 +25,11 @@
                     <td>{{ $transaksi->created_at }}</td>
                     <td>{{ $transaksi->users->nama }}</td>
                     <td>{{ $transaksi->total }}</td>
+                    <td>{{ $transaksi->uangpembeli }}</td>
+                    <td>{{ $transaksi->kembalian }}</td>
                 </tr>
                 <tr class="expandable-body d-none">
-                    <td colspan="4">
+                    <td colspan="6">
                         <p>
                         <table class="table table-dark table-bordered">
                             <thead>

@@ -14,7 +14,7 @@ class Transaksi extends Model
     protected $table = 'transaksis';
 
     protected $fillable = [
-        'total', 'user_id'
+        'total', 'user_id', 'uangpembeli', 'kembalian',
     ];
 
     public function keranjangs()

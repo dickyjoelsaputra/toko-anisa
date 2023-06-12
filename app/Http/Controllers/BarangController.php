@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Dompdf\Dompdf;
 use App\Models\Harga;
 use App\Models\Barang;
 use App\Models\Satuan;
@@ -9,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 use Illuminate\Support\Facades\Validator;
 // use DataTables;
 
@@ -293,5 +295,58 @@ class BarangController extends Controller
         $barang->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
+    }
+
+    public function print($id)
+    {
+        $barang = Barang::findOrFail($id);
+        $namaBarang = $barang->nama;
+        $kode = $barang->kode;
+
+        // Membuat barcode menggunakan PHP Barcode Generator
+        $barcodeGenerator = new BarcodeGeneratorPNG();
+        $barcode = $barcodeGenerator->getBarcode($kode, $barcodeGenerator::TYPE_CODE_128);
+
+        // Menginisialisasi objek Dompdf
+        $dompdf = new Dompdf();
+
+        // Membuat konten HTML untuk PDF
+        $html = '<html><head><style>body { margin: 0; }</style></head><body>';
+
+        // Menghitung jumlah barcode per baris
+        $barcodesPerRow = 3;
+
+        // Menghitung jumlah baris
+        $totalRows = ceil(30 / $barcodesPerRow);
+
+        // Loop untuk menampilkan barcode pada halaman PDF
+        for ($row = 0; $row < $totalRows; $row++) {
+            $html .= '<div style="margin: 10px;">';
+
+            for ($col = 0; $col < $barcodesPerRow; $col++) {
+                $html .= '<div style="display: inline-block; margin-right: 20px; margin-bottom: 20px; ">';
+                $html .= '<div style="margin-bottom: 10px; margin-right: 10px;">';
+                $html .= '<img src="data:image/png;base64,' . base64_encode($barcode) . '">';
+                $html .= '</div>';
+                $html .= '<div style="text-align: center; font-size: 12px;">' . $namaBarang . ' - ' . $kode . '</div>';
+                $html .= '</div>';
+            }
+
+            $html .= '</div>';
+        }
+
+        $html .= '</body></html>';
+
+        // Memuat konten HTML ke objek Dompdf
+        $dompdf->loadHtml($html);
+
+        // Render konten HTML menjadi file PDF
+        $dompdf->render();
+
+        // Menghasilkan nama file PDF dengan format "barcode_<kode>.pdf"
+        $fileName = 'barcode_' . $kode . '.pdf';
+
+        // Mengirim file PDF untuk diunduh oleh pengguna
+        return $dompdf->stream($fileName);
     }
 }

@@ -102,11 +102,17 @@
                         render: function(data, type, full, meta) {
                             var editUrl = "{{ route('barang-edit', ':id') }}".replace(':id', data
                                 .id);
+                            var printUrl = "{{ route('barang-print', ':id') }}".replace(':id', data
+                                .id);
                             var deleteUrl = "{{ route('barang-destroy', ':id') }}".replace(':id',
                                 data.id);
                             var buttons = '<div class="d-flex flex-column">';
                             buttons += '<a href="' + editUrl +
                                 '" class="btn btn-primary mb-2"><i class="fa fa-edit"></i> Edit</a>';
+                            if(data.manual === 1){
+                                buttons += '<a href="' + printUrl +
+                                '" class="btn btn-warning mb-2"><i class="fa fa-print" aria-hidden="true"></i> Print</a>';
+                            }
                             buttons += '<button class="btn btn-danger mb-2 w-100 delete-btn" data-url="' + deleteUrl + '"><i class="fa fa-trash"></i> Delete</button>';
                             buttons += '</div>';
                             return buttons;
