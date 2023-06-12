@@ -9,6 +9,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransaksiController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,6 +34,7 @@ Route::middleware('auth')->group(
         Route::get('/kasir', [KasirController::class, 'index'])->name('kasir-index');
         Route::get('/kasir/{id}', [KasirController::class, 'getOne'])->name('kasir-getone');
         Route::post('/kasir/search', [KasirController::class, 'search'])->name('kasir-search');
+        Route::post('/kasir/scan', [KasirController::class, 'scan'])->name('kasir-scan');
 
         // USER
         Route::get('/user', [UserController::class, 'index'])->name('user-index');
@@ -52,5 +54,9 @@ Route::middleware('auth')->group(
         Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan-index');
         Route::post('/satuan', [SatuanController::class, 'store'])->name('satuan-store');
         Route::delete('/satuan/{id}', [SatuanController::class, 'destroy'])->name('satuan-destroy');
+
+        // TRANSAKSI
+        Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi-index');
+        Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi-store');
     }
 );

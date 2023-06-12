@@ -6,88 +6,79 @@
 </style>
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="toast-container">
-            </div>
-            <div class="mb-3" id="reader" width="600px"></div>
-            <div class="form-group">
-                <label>Scan Barcode</label>
-                <input id="kode" name="kode" type="text" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Nama Barang</label>
-                <input id="nama" name="nama" type="text" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Satuan Barang</label>
-                <select class="form-control select2" style="width: 100%;" name="satuan">
-                    <option selected disabled></option>
-                    @foreach ($satuans as $satuan)
-                        <option value="{{ $satuan->id }}">{{ $satuan->nama }} ||
-                            {{ $satuan->alias }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Harga dan minimal</label>
-                <div class="my-wrapper">
-                    <div class="input-group mb-2 minhar">
-                        <span class="input-group-addon">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Min</span>
-                            </div>
-                        </span>
-                        <input name="minimal[]" id="minimal" value="1" type="text" class="form-control minimal"
-                            placeholder="Minimal Pembelian" />
-                        <span class="input-group-addon">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Harga</span>
-                            </div>
-                        </span>
-                        <input style="width: 100px" name="harga[]" id="harga" type="text" class="form-control harga"
-                            placeholder="Harga" />
-                        {{-- ICON --}}
-                        <span class="input-group-addon">
-                            <div class="input-group-prepend" style="height: 100%">
-                                <span class="input-group-text icon" id="basic-addon1"><i class="fa fa-trash"></i>
-                                </span>
-                            </div>
-                        </span>
-                        {{-- ICON --}}
-                    </div>
-                </div>
-                <div class="d-flex flex-column align-items-center">
-                    <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
-                        Minimal &
-                        Harga</button>
+<div class="card">
+    <div class="card-body">
+        <div class="toast-container">
+        </div>
+        <div class="mb-3" id="reader" width="600px"></div>
+        <div class="form-group">
+            <label>Scan Barcode</label>
+            <input id="kode" name="kode" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Nama Barang</label>
+            <input id="nama" name="nama" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Satuan Barang</label>
+            <select class="form-control select2" style="width: 100%;" name="satuan">
+                <option selected disabled></option>
+                @foreach ($satuans as $satuan)
+                <option value="{{ $satuan->id }}">{{ $satuan->nama }} ||
+                    {{ $satuan->alias }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Harga</label>
+            <div class="my-wrapper">
+                <div class="input-group mb-2 minhar">
+                    <span class="input-group-addon">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Harga</span>
+                        </div>
+                    </span>
+                    <input style="width: 100px" name="harga[]" id="harga" type="text" class="form-control harga"
+                        placeholder="Harga" />
+                    {{-- ICON --}}
+                    <span class="input-group-addon">
+                        <div class="input-group-prepend" style="height: 100%">
+                            <span class="input-group-text icon" id="basic-addon1"><i class="fa fa-trash"></i>
+                            </span>
+                        </div>
+                    </span>
+                    {{-- ICON --}}
                 </div>
             </div>
-            <div class="text-center">
-                <div class="image-container" id="image-container">
-                    <img src="" name="gambar" id="gambar-preview" style="display: none;" alt="Preview Gambar"
-                        class="mx-auto">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Gambar Barang</label>
-                <input class="form-control" type="file" id="gambar-input">
-            </div>
-
-            <hr>
             <div class="d-flex flex-column align-items-center">
-                <button type="button" id="prosesbarang" class="btn btn-success mt-3">
-                    Proses Barang
-                </button>
+                <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah Harga</button>
             </div>
         </div>
+        <div class="text-center">
+            <div class="image-container" id="image-container">
+                <img src="" name="gambar" id="gambar-preview" style="display: none;" alt="Preview Gambar"
+                    class="mx-auto">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Gambar Barang</label>
+            <input class="form-control" type="file" id="gambar-input">
+        </div>
+
+        <hr>
+        <div class="d-flex flex-column align-items-center">
+            <button type="button" id="prosesbarang" class="btn btn-success mt-3">
+                Proses Barang
+            </button>
+        </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script>
-        function playSuccessSound() {
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    function playSuccessSound() {
             const successSound = new Audio("{{ asset('assets/sound/mixkit-game-notification-wave-alarm-987.wav') }}");
             console.log(successSound);
             successSound.play();
@@ -123,7 +114,7 @@
             $('.select2').select2({
                 theme: 'bootstrap4'
             })
-            
+
             $("#kode").focus();
 
             $('#image-container').hide();
@@ -151,13 +142,6 @@
             $('#tambahharga').click(function() {
                 var inputGroup = $(`
                     <div class="input-group mb-2 minhar">
-                        <span class="input-group-addon">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Min</span>
-                            </div>
-                        </span>
-                        <input name="minimal[]" id="minimal" type="text" class="form-control minimal"
-                            placeholder="Minimal Pembelian" />
                         <span class="input-group-addon">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1">Harga</span>
@@ -195,12 +179,13 @@
                 var satuanid = $('select[name="satuan"]').val();
                 var arrayminhar = [];
                 var src = $("#gambar-preview").attr("src");
+                if (src == undefined) {
+                src = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
+                }
 
                 $('.minhar').each(function() {
-                    var minimal = $(this).find('.minimal').val();
                     var harga = $(this).find('.harga').val();
                     var data = {
-                        minimal: minimal,
                         harga: harga
                     };
                     arrayminhar.push(data);
@@ -282,71 +267,71 @@
                 }, 15000);
             }
         });
-    </script>
-    <style>
-        /* TOAST */
+</script>
+<style>
+    /* TOAST */
 
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
 
-        .toast-body ul {
-            list-style-type: disc;
-            margin: 0;
-            padding: 0 0 0 20px;
-        }
+    .toast-body ul {
+        list-style-type: disc;
+        margin: 0;
+        padding: 0 0 0 20px;
+    }
 
-        .toast-body ul li {
-            margin-bottom: 5px;
-        }
+    .toast-body ul li {
+        margin-bottom: 5px;
+    }
 
-        .bg-green {
-            background-color: greenyellow;
-        }
+    .bg-green {
+        background-color: greenyellow;
+    }
 
-        .bg-red {
-            background-color: red;
-        }
+    .bg-red {
+        background-color: red;
+    }
 
-        .toast {
+    .toast {
+        opacity: 0;
+        animation: fade-in 2s ease-in-out forwards;
+    }
+
+    .fade {
+        transition-duration: 4s;
+    }
+
+    @keyframes fade-in {
+        from {
             opacity: 0;
-            animation: fade-in 2s ease-in-out forwards;
         }
 
-        .fade {
-            transition-duration: 4s;
+        to {
+            opacity: 1;
         }
+    }
 
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-            }
+    .input-group .icon {
+        background-color: red;
+        color: white;
+    }
 
-            to {
-                opacity: 1;
-            }
-        }
+    .image-container {
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+    }
 
-        .input-group .icon {
-            background-color: red;
-            color: white;
-        }
-
-        .image-container {
-            width: 200px;
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-            margin: 0 auto;
-        }
-
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 @endsection

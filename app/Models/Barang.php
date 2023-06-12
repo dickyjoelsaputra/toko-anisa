@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Harga;
 use App\Models\Satuan;
+use App\Models\Keranjang;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,5 +26,10 @@ class Barang extends Model
     public function hargas()
     {
         return $this->hasMany(Harga::class, 'barang_id', 'id');
+    }
+
+    public function keranjangs()
+    {
+        return $this->hasMany(Keranjang::class, 'barang_id', 'id');
     }
 }

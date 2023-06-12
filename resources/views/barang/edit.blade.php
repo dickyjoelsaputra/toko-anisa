@@ -6,118 +6,111 @@
 </style>
 
 @section('content')
-    <div class="card">
-        {{ $barang }}
-        <div class="card-body">
-            <div class="toast-container">
-            </div>
-            <form>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label>Scan Barcode</label>
-                            <input id="kode" value="{{ $barang->kode }}" name="kode" type="text"
-                                class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Nama Barang</label>
-                            <input id="nama" value="{{ $barang->nama }}" name="nama" type="text"
-                                class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Satuan Barang</label>
-                            <select class="form-control select2" style="width: 100%;" name="satuan">
-                                <option selected disabled></option>
-                                @foreach ($satuans as $satuan)
-                                    <option @selected($barang->satuans->id == $satuan->id) value="{{ $satuan->id }}">{{ $satuan->nama }} ||
-                                        {{ $satuan->alias }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Harga dan minimal</label>
-                            <div class="my-wrapper">
-                                @foreach ($barang->hargas as $harga)
-                                    <div class="input-group mb-2 minhar">
-                                        <span class="input-group-addon">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="basic-addon1">Minimal</span>
-                                            </div>
-                                        </span>
-                                        <input value="{{ $harga->minimal }}" name="minimal[]" id="minimal" value="1"
-                                            type="text" class="form-control minimal" placeholder="Minimal Pembelian" />
-                                        <span class="input-group-addon">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="basic-addon1">Harga</span>
-                                            </div>
-                                        </span>
-                                        <input value="{{ $harga->harga }}" name="harga[]" id="harga" type="text"
-                                            class="form-control harga" placeholder="Harga" />
-                                        {{-- ICON --}}
-                                        <span class="input-group-addon">
-                                            <div class="input-group-prepend" style="height: 100%">
-                                                <span class="input-group-text icon" id="basic-addon1"><i
-                                                        class="fa fa-trash"></i>
-                                                </span>
-                                            </div>
-                                        </span>
-                                        {{-- ICON --}}
+<div class="card">
+    {{ $barang }}
+    <div class="card-body">
+        <div class="toast-container">
+        </div>
+        <form>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label>Scan Barcode</label>
+                        <input id="kode" value="{{ $barang->kode }}" name="kode" type="text"
+                            class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Barang</label>
+                        <input id="nama" value="{{ $barang->nama }}" name="nama" type="text"
+                            class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Satuan Barang</label>
+                        <select class="form-control select2" style="width: 100%;" name="satuan">
+                            <option selected disabled></option>
+                            @foreach ($satuans as $satuan)
+                            <option @selected($barang->satuans->id == $satuan->id) value="{{ $satuan->id }}">{{
+                                $satuan->nama }} ||
+                                {{ $satuan->alias }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <div class="my-wrapper">
+                            @foreach ($barang->hargas as $harga)
+                            <div class="input-group mb-2 minhar">
+                                <span class="input-group-addon">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Harga</span>
                                     </div>
-                                @endforeach
+                                </span>
+                                <input value="{{ $harga->harga }}" name="harga[]" id="harga" type="text"
+                                    class="form-control harga" placeholder="Harga" />
+                                {{-- ICON --}}
+                                <span class="input-group-addon">
+                                    <div class="input-group-prepend" style="height: 100%">
+                                        <span class="input-group-text icon" id="basic-addon1"><i
+                                                class="fa fa-trash"></i>
+                                        </span>
+                                    </div>
+                                </span>
+                                {{-- ICON --}}
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="d-flex flex-column align-items-center">
+                            <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
+                                Harga</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Akses Kamera</h3>
+                            <div id="cameraView" class="camera-container">
+                                <video id="videoElement"></video>
                             </div>
                             <div class="d-flex flex-column align-items-center">
-                                <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
-                                    Minimal &
-                                    Harga</button>
+                                <button type="button" id="captureBtn" class="btn btn-primary mt-3">Ambil
+                                    Foto</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3>Akses Kamera</h3>
-                                <div id="cameraView" class="camera-container">
-                                    <video id="videoElement"></video>
-                                </div>
-                                <div class="d-flex flex-column align-items-center">
-                                    <button type="button" id="captureBtn" class="btn btn-primary mt-3">Ambil
-                                        Foto</button>
-                                </div>
+                        <div class="col-md-6">
+                            <h3>Hasil Jepretan</h3>
+                            <div id="photoPreview" class="photo-container">
+                                <img id="gambar-preview" src=""
+                                    class="img-fluid myImage">
                             </div>
-                            <div class="col-md-6">
-                                <h3>Hasil Jepretan</h3>
-                                <div id="photoPreview" class="photo-container">
-                                    <img id="gambar-preview" src="{{ asset('storage/' . $barang->gambar) }}"
-                                        class="img-fluid myImage">
-                                </div>
-                                @if ($barang->gambar)
-                                    <div class="d-flex flex-column align-items-center">
-                                        <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto">Hapus
-                                            Foto</button>
-                                    </div>
-                                @else
-                                    <div class="d-flex flex-column align-items-center">
-                                        <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto"
-                                            style="display: none;">Hapus
-                                            Foto</button>
-                                    </div>
-                                @endif
+                            @if ($barang->gambar)
+                            <div class="d-flex flex-column align-items-center">
+                                <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto">Hapus
+                                    Foto</button>
                             </div>
+                            @else
+                            <div class="d-flex flex-column align-items-center">
+                                <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto"
+                                    style="display: none;">Hapus
+                                    Foto</button>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="d-flex flex-column align-items-center">
-                    <button type="button" id="proses" class="btn btn-success mt-3 mb-5">Edit Barang</button>
-                </div>
-            </form>
-        </div>
+            </div>
+            <hr>
+            <div class="d-flex flex-column align-items-center">
+                <button type="button" id="proses" class="btn btn-success mt-3 mb-5">Edit Barang</button>
+            </div>
+        </form>
     </div>
+</div>
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             // =============== KAMERA START =======================
             // Akses kamera
             navigator.mediaDevices.getUserMedia({
@@ -182,12 +175,6 @@
                 <div class="input-group mb-2 minhar">
                                 <span class="input-group-addon">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Minimal</span>
-                                    </div>
-                                </span>
-                                <input type="text" class="form-control minimal" placeholder="Minimal Pembelian" />
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">Harga</span>
                                     </div>
                                 </span>
@@ -226,10 +213,8 @@
                 var src = $("#gambar-preview").attr("src");
 
                 $('.minhar').each(function() {
-                    var minimal = $(this).find('.minimal').val();
                     var harga = $(this).find('.harga').val();
                     var data = {
-                        minimal: minimal,
                         harga: harga
                     };
                     arrayminhar.push(data);
@@ -308,100 +293,113 @@
                 }, 15000);
             }
 
+
+            var imageUrl = "{{ asset('storage/' . $barang->gambar) }}";
+            var image = new Image();
+            image.src = imageUrl;
+            image.onload = function() {
+            console.log("Gambar tersedia");
+            $('#gambar-preview').attr('src', imageUrl);
+            };
+            image.onerror = function() {
+            console.log("Gambar tidak tersedia");
+            var defaultImageUrl = "{{ $barang->gambar }}";
+            $('#gambar-preview').attr('src', defaultImageUrl);
+            };
             // END
         });
-    </script>
-    <style>
-        /* KAMERA START */
+</script>
+<style>
+    /* KAMERA START */
 
-        .camera-container {
-            position: relative;
-            padding-bottom: 100%;
-            /* Mengubah proporsi menjadi 1:1 */
-            height: 0;
-            overflow: hidden;
-        }
+    .camera-container {
+        position: relative;
+        padding-bottom: 100%;
+        /* Mengubah proporsi menjadi 1:1 */
+        height: 0;
+        overflow: hidden;
+    }
 
-        .camera-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .camera-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-        .photo-container {
-            width: 100%;
-            height: 0;
-            padding-bottom: 100%;
-            /* Mengubah proporsi menjadi 1:1 */
-            position: relative;
-            overflow: hidden;
-        }
+    .photo-container {
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+        /* Mengubah proporsi menjadi 1:1 */
+        position: relative;
+        overflow: hidden;
+    }
 
-        .photo-container img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: auto;
-        }
+    .photo-container img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: auto;
+    }
 
-        /* KAMERA END */
+    /* KAMERA END */
 
-        .input-group .icon {
-            background-color: red;
-            color: white;
-        }
+    .input-group .icon {
+        background-color: red;
+        color: white;
+    }
 
-        /* TOAST */
+    /* TOAST */
 
-        /* TOAST */
+    /* TOAST */
 
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
 
-        .toast-body ul {
-            list-style-type: disc;
-            margin: 0;
-            padding: 0 0 0 20px;
-        }
+    .toast-body ul {
+        list-style-type: disc;
+        margin: 0;
+        padding: 0 0 0 20px;
+    }
 
-        .toast-body ul li {
-            margin-bottom: 5px;
-        }
+    .toast-body ul li {
+        margin-bottom: 5px;
+    }
 
-        .bg-green {
-            background-color: greenyellow;
-        }
+    .bg-green {
+        background-color: greenyellow;
+    }
 
-        .bg-red {
-            background-color: red;
-        }
+    .bg-red {
+        background-color: red;
+    }
 
-        .toast {
+    .toast {
+        opacity: 0;
+        animation: fade-in 2s ease-in-out forwards;
+    }
+
+    .fade {
+        transition-duration: 4s;
+    }
+
+    @keyframes fade-in {
+        from {
             opacity: 0;
-            animation: fade-in 2s ease-in-out forwards;
         }
 
-        .fade {
-            transition-duration: 4s;
+        to {
+            opacity: 1;
         }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-    </style>
+    }
+</style>
 @endsection

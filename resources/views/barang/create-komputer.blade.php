@@ -6,117 +6,109 @@
 </style>
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="toast-container">
-            </div>
-            <form>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label>Scan Barcode</label>
-                            <input id="kode" name="kode" type="text" class="form-control">
+<div class="card">
+    <div class="card-body">
+        <div class="toast-container">
+        </div>
+        <form>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label>Scan Barcode</label>
+                        <input id="kode" name="kode" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Barang</label>
+                        <input id="nama" name="nama" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Satuan Barang</label>
+                        <select class="form-control select2" style="width: 100%;" name="satuan">
+                            <option selected disabled></option>
+                            @foreach ($satuans as $satuan)
+                            <option value="{{ $satuan->id }}">{{ $satuan->nama }} ||
+                                {{ $satuan->alias }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga</label>
+                        <div class="my-wrapper">
+                            <div class="input-group mb-2 minhar">
+                                <span class="input-group-addon">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Harga</span>
+                                    </div>
+                                </span>
+                                <input name="harga[]" id="harga" type="text" class="form-control harga"
+                                    placeholder="Harga" />
+                                {{-- ICON --}}
+                                <span class="input-group-addon">
+                                    <div class="input-group-prepend" style="height: 100%">
+                                        <span class="input-group-text icon" id="basic-addon1"><i
+                                                class="fa fa-trash"></i>
+                                        </span>
+                                    </div>
+                                </span>
+                                {{-- ICON --}}
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Nama Barang</label>
-                            <input id="nama" name="nama" type="text" class="form-control">
+                        <div class="d-flex flex-column align-items-center">
+                            <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
+                                Harga</button>
                         </div>
-                        <div class="form-group">
-                            <label>Satuan Barang</label>
-                            <select class="form-control select2" style="width: 100%;" name="satuan">
-                                <option selected disabled></option>
-                                @foreach ($satuans as $satuan)
-                                    <option value="{{ $satuan->id }}">{{ $satuan->nama }} ||
-                                        {{ $satuan->alias }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Harga dan minimal</label>
-                            <div class="my-wrapper">
-                                <div class="input-group mb-2 minhar">
-                                    <span class="input-group-addon">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">Minimal</span>
-                                        </div>
-                                    </span>
-                                    <input name="minimal[]" id="minimal" value="1" type="text"
-                                        class="form-control minimal" placeholder="Minimal Pembelian" />
-                                    <span class="input-group-addon">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">Harga</span>
-                                        </div>
-                                    </span>
-                                    <input name="harga[]" id="harga" type="text" class="form-control harga"
-                                        placeholder="Harga" />
-                                    {{-- ICON --}}
-                                    <span class="input-group-addon">
-                                        <div class="input-group-prepend" style="height: 100%">
-                                            <span class="input-group-text icon" id="basic-addon1"><i
-                                                    class="fa fa-trash"></i>
-                                            </span>
-                                        </div>
-                                    </span>
-                                    {{-- ICON --}}
-                                </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Akses Kamera</h3>
+                            <div id="cameraView" class="camera-container">
+                                <video id="videoElement"></video>
                             </div>
                             <div class="d-flex flex-column align-items-center">
-                                <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
-                                    Minimal &
-                                    Harga</button>
+                                <button type="button" id="captureBtn" class="btn btn-primary mt-3">Ambil
+                                    Foto</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3>Akses Kamera</h3>
-                                <div id="cameraView" class="camera-container">
-                                    <video id="videoElement"></video>
-                                </div>
-                                <div class="d-flex flex-column align-items-center">
-                                    <button type="button" id="captureBtn" class="btn btn-primary mt-3">Ambil
-                                        Foto</button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h3>Hasil Jepretan</h3>
-                                <div id="photoPreview" class="photo-container"></div>
-                                <div class="d-flex flex-column align-items-center">
-                                    <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto"
-                                        style="display: none;">Hapus
-                                        Foto</button>
-                                </div>
+                        <div class="col-md-6">
+                            <h3>Hasil Jepretan</h3>
+                            <div id="photoPreview" class="photo-container"></div>
+                            <div class="d-flex flex-column align-items-center">
+                                <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto"
+                                    style="display: none;">Hapus
+                                    Foto</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="d-flex flex-column align-items-center">
-                    <button type="button" id="tambah" class="btn btn-success mt-3">Tambah Barang</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <h4>Result</h4>
-            <div class="row row-cols-4 okcard gutter">
             </div>
-
             <hr>
             <div class="d-flex flex-column align-items-center">
-                <button type="button" id="proses" class="btn btn-success mt-3 mb-5">Proses Barang</button>
+                <button type="button" id="tambah" class="btn btn-success mt-3">Tambah Barang</button>
             </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h4>Result</h4>
+        <div class="row row-cols-4 okcard gutter">
+        </div>
+
+        <hr>
+        <div class="d-flex flex-column align-items-center">
+            <button type="button" id="proses" class="btn btn-success mt-3 mb-5">Proses Barang</button>
         </div>
     </div>
+</div>
 
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
 
             $('.harga').mask('000.000.000', {
                 reverse: true
@@ -183,12 +175,7 @@
             $('#tambahharga').click(function() {
                 var inputGroup = $(`
                 <div class="input-group mb-2 minhar">
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Minimal</span>
-                                    </div>
-                                </span>
-                                <input type="text" class="form-control minimal" placeholder="Minimal Pembelian" />
+
                                 <span class="input-group-addon">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">Harga</span>
@@ -228,18 +215,20 @@
                 var arrayminhar = [];
 
                 $('.minhar').each(function() {
-                    var minimal = $(this).find('.minimal').val();
                     var harga = $(this).find('.harga').val();
                     var data = {
-                        minimal: minimal,
                         harga: harga
                     };
                     arrayminhar.push(data);
                 });
 
                 var src = $(".myImage").attr("src"); // Mendapatkan nilai atribut 'src'
-                var imageData = src.split(",")[
-                    1]; // Mendapatkan data base64 (tanpa "data:image/png;base64,")
+                console.log(src)
+                if (src == undefined) {
+                src = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
+                }
+                // var imageData = src.split(",")[
+                    // 1]; // Mendapatkan data base64 (tanpa "data:image/png;base64,")
                 var fileName = "image.png"; // Nama file yang diinginkan
 
                 card = `
@@ -263,12 +252,11 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Minimal</th>
                                             <th>Harga</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        ${arrayminhar.map(item => `<tr><td>${item.minimal}</td><td>${item.harga}</td></tr>`).join('')}
+                                        ${arrayminhar.map(item => `<tr><td>${item.harga}</td></tr>`).join('')}
                                     </tbody>
                                 </table>
                             </li>
@@ -297,7 +285,6 @@
                 $("#kode").val('');
                 $("#nama").val('');
                 $('select[name="satuan"]').val('').trigger('change');
-                $('.minimal').val('');
                 $('.harga').val('');
                 $('.minhar:not(:first)').remove();
                 $('#photoPreview').empty();
@@ -337,6 +324,8 @@
                             $(this).remove(); // Menghapus col itu sendiri
                         });
                         $("#kode").focus();
+                        // clear final data
+                        finaldata = [];
                     },
                     error: function(xhr, status, error) {
                         var errorResponse = JSON.parse(xhr.responseText);
@@ -351,14 +340,9 @@
                                 errorMessages += '<li>' + errorMessage + '</li>';
                             }
                         }
-
                         errorMessages += '</ul>';
 
                         showToast(errorMessages, 'error');
-                        $('.row-cols-4.okcard .col').each(function() {
-                            $(this).empty(); // Menghapus konten dalam col
-                            $(this).remove(); // Menghapus col itu sendiri
-                        });
                         $("#kode").focus();
                     }
                 });
@@ -402,130 +386,130 @@
                 }, 15000);
             }
         });
-    </script>
-    <style>
-        /* TOAST START */
-        .toast-body ul {
-            list-style-type: disc;
-            margin: 0;
-            padding: 0 0 0 20px;
-        }
+</script>
+<style>
+    /* TOAST START */
+    .toast-body ul {
+        list-style-type: disc;
+        margin: 0;
+        padding: 0 0 0 20px;
+    }
 
-        .toast-body ul li {
-            margin-bottom: 5px;
-        }
+    .toast-body ul li {
+        margin-bottom: 5px;
+    }
 
-        .bg-green {
-            background-color: greenyellow;
-        }
+    .bg-green {
+        background-color: greenyellow;
+    }
 
-        .bg-red {
-            background-color: red;
-        }
+    .bg-red {
+        background-color: red;
+    }
 
-        .toast {
+    .toast {
+        opacity: 0;
+        animation: fade-in 2s ease-in-out forwards;
+    }
+
+    .fade {
+        transition-duration: 4s;
+    }
+
+    @keyframes fade-in {
+        from {
             opacity: 0;
-            animation: fade-in 2s ease-in-out forwards;
         }
 
-        .fade {
-            transition-duration: 4s;
+        to {
+            opacity: 1;
         }
+    }
 
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-            }
+    /* TOAST END */
 
-            to {
-                opacity: 1;
-            }
-        }
+    /* KAMERA START */
 
-        /* TOAST END */
+    .camera-container {
+        position: relative;
+        padding-bottom: 100%;
+        /* Mengubah proporsi menjadi 1:1 */
+        height: 0;
+        overflow: hidden;
+    }
 
-        /* KAMERA START */
+    .camera-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-        .camera-container {
-            position: relative;
-            padding-bottom: 100%;
-            /* Mengubah proporsi menjadi 1:1 */
-            height: 0;
-            overflow: hidden;
-        }
+    .photo-container {
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+        /* Mengubah proporsi menjadi 1:1 */
+        position: relative;
+        overflow: hidden;
+    }
 
-        .camera-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .photo-container img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: auto;
+    }
 
-        .photo-container {
-            width: 100%;
-            height: 0;
-            padding-bottom: 100%;
-            /* Mengubah proporsi menjadi 1:1 */
-            position: relative;
-            overflow: hidden;
-        }
-
-        .photo-container img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: auto;
-        }
-
-        /* KAMERA END */
+    /* KAMERA END */
 
 
-        .input-group-addon {
-            border-left-width: 0;
-            border-right-width: 0;
-        }
+    .input-group-addon {
+        border-left-width: 0;
+        border-right-width: 0;
+    }
 
-        .input-group-addon:first-child {
-            border-left-width: 1px;
-        }
+    .input-group-addon:first-child {
+        border-left-width: 1px;
+    }
 
-        .input-group-addon:last-child {
-            border-right-width: 1px;
-        }
+    .input-group-addon:last-child {
+        border-right-width: 1px;
+    }
 
-        .input-group .icon {
-            background-color: red;
-            color: white;
-        }
+    .input-group .icon {
+        background-color: red;
+        color: white;
+    }
 
-        .okcard .col {
-            padding: 10px;
-        }
+    .okcard .col {
+        padding: 10px;
+    }
 
-        .cross-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .cross-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        /* TOAST */
+    /* TOAST */
 
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-    </style>
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+</style>
 @endsection

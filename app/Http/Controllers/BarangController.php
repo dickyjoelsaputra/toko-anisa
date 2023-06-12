@@ -25,13 +25,11 @@ class BarangController extends Controller
             ->addColumn('harga', function ($barang) {
                 $harga = '<table style="width: 100%">';
                 $harga .= '<tr>';
-                $harga .= '<th>Minimal</th>';
                 $harga .= '<th>Harga</th>';
                 $harga .= '<tr>';
                 foreach ($barang->hargas as $hargaItem) {
                     // $formattedHarga = number_format($hargaItem->harga, 0, ',', '.');
                     $harga .= '<tr>';
-                    $harga .= '<td>' . $hargaItem->minimal . '</td>';
                     $harga .= '<td class="harga-tbl">' . $hargaItem->harga . '</td>';
                     $harga .= '</tr>';
                 }
@@ -50,6 +48,8 @@ class BarangController extends Controller
     {
 
         // ASSSIGN
+        // return dd($request->all());
+
         $finalData = $request->finalData;
 
         // VALIDASI
@@ -57,8 +57,7 @@ class BarangController extends Controller
             'finalData' => 'required|array',
             'finalData.*.nama' => 'required',
             'finalData.*.satuanid' => 'required',
-            'finalData.*.minhar.*.minimal' => 'required',
-            'finalData.*.minhar.*.harga' => 'required',
+            // 'finalData.*.minhar.*.harga' => 'required',
             'finalData.*.src' => 'nullable|string',
             'finalData.*.filename' => 'nullable',
         ];
@@ -68,8 +67,7 @@ class BarangController extends Controller
             'finalData.array' => 'Data akhir harus berupa array.',
             'finalData.*.nama.required' => 'Nama harus diisi.',
             'finalData.*.satuanid.required' => 'Satuan barang harus diisi.',
-            'finalData.*.minhar.*.minimal.required' => 'Minimal harus diisi.',
-            'finalData.*.minhar.*.harga.required' => 'Harga harus diisi.',
+            // 'finalData.*.minhar.*.harga.required' => 'Harga harus diisi.',
             'finalData.*.src.string' => 'Sumber harus berupa string.',
         ];
 
@@ -96,7 +94,7 @@ class BarangController extends Controller
                 $data['manual'] = 1;
             }
             // UNTUK GAMBAR
-            if ($data['src']) {
+            if ($data['src'] != "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg") {
                 $base64Image = $data['src'];
                 $imageName = Str::random(40); // Nama acak untuk file
                 $imagePath = 'barang/' . $imageName . '.png'; // Path lengkap file
@@ -120,7 +118,6 @@ class BarangController extends Controller
             foreach ($data['minhar'] as $minhar) {
                 $newHarga = Harga::create([
                     'barang_id' => $newBarang->id,
-                    'minimal' => $minhar['minimal'],
                     'harga' => intval(str_replace(".", "", $minhar['harga'],)),
                 ]);
             }
@@ -137,10 +134,10 @@ class BarangController extends Controller
 
     public function storeHp(Request $request)
     {
+
         $rules = [
             'nama' => 'required',
             'satuanid' => 'required',
-            'minhar.*.minimal' => 'required',
             'minhar.*.harga' => 'required',
             'src' => 'nullable|string',
         ];
@@ -148,7 +145,6 @@ class BarangController extends Controller
         $messages = [
             'nama.required' => 'Nama harus diisi.',
             'satuanid.required' => 'Satuan barang harus diisi.',
-            'minhar.*.minimal.required' => 'Minimal harus diisi.',
             'minhar.*.harga.required' => 'Harga harus diisi.',
             'src.string' => 'Sumber harus berupa string.',
         ];
@@ -179,12 +175,14 @@ class BarangController extends Controller
         if ($request->src) {
             $base64Image = $request->src;
             $imageName = Str::random(40); // Nama acak untuk file
-            $imagePath = 'barang/' . $imageName . '.png'; // Path lengkap file
             $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
 
+            $imagePath = 'barang/' . $imageName . '.png'; // Path lengkap file
             Storage::disk('public')->put($imagePath, $imageData);
 
             $request->src = $imagePath;
+        } else {
+            $request->src = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
         }
 
         $request->nama = strtoupper($request->nama);
@@ -201,7 +199,6 @@ class BarangController extends Controller
         foreach ($request->minhar as $minhar) {
             $newHarga = Harga::create([
                 'barang_id' => $newBarang->id,
-                'minimal' => $minhar['minimal'],
                 'harga' => intval(str_replace(".", "", $minhar['harga'],)),
             ]);
         }
@@ -218,57 +215,68 @@ class BarangController extends Controller
 
     public function update(Request $request, $id)
     {
+        $rules = [
+            'nama' => 'required',
+            'satuanid' => 'required',
+            'minhar.*.harga' => 'required',
+            'src' => 'nullable|string',
+        ];
+
+        $messages = [
+            'nama.required' => 'Nama harus diisi.',
+            'satuanid.required' => 'Satuan barang harus diisi.',
+            'minhar.*.harga.required' => 'Harga harus diisi.',
+            'src.string' => 'Sumber harus berupa string.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $barang = Barang::findOrFail($id);
+
+        return dd([$request->src, $barang->gambar]);
+
+        if ($request->src) {
+            if ($request->src == asset('storage/' . $barang->gambar)) {
+                $request->src = $barang->gambar;
+            } else {
+                if (Storage::exists($barang->gambar)) {
+                    Storage::delete($barang->gambar);
+                }
+                $base64Image = $request->src;
+                $imageName = Str::random(40); // Nama acak untuk file
+                $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $base64Image));
+
+                $imagePath = 'barang/' . $imageName . '.png'; // Path lengkap file
+                Storage::disk('public')->put($imagePath, $imageData);
+
+                $request->src = $imagePath;
+            }
+        } else {
+            if (Storage::exists($barang->gambar)) {
+                Storage::delete($barang->gambar);
+            }
+            $request->src = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
+        }
+
+
+        $barang->nama = strtoupper($request->nama);
+        $barang->satuan_id = $request->satuanid;
+        $barang->gambar = $request->src;
+        $barang->save();
+
+        $barang->hargas()->delete();
+        foreach ($request->minhar as $minhar) {
+            $newHarga = Harga::create([
+                'barang_id' => $barang->id,
+                'harga' => intval(str_replace(".", "", $minhar['harga'],)),
+            ]);
+        }
+
         return response()->json([$request->all(), $id]);
-
-        // VALIDASI START
-        // $rules = [
-        //     'nama' => 'required',
-        //     'satuanid' => 'required',
-        //     'minhar.*.minimal' => 'required',
-        //     'minhar.*.harga' => 'required',
-        //     'src' => 'nullable|string',
-        // ];
-
-        // $messages = [
-        //     'nama.required' => 'Nama harus diisi.',
-        //     'satuanid.required' => 'Satuan barang harus diisi.',
-        //     'minhar.*.minimal.required' => 'Minimal harus diisi.',
-        //     'minhar.*.harga.required' => 'Harga harus diisi.',
-        //     'src.string' => 'Sumber harus berupa string.',
-        // ];
-
-        // $validator = Validator::make($request->all(), $rules, $messages);
-
-        // if ($validator->fails()) {
-        //     return response()->json(['error' => $validator->errors()], 400);
-        // }
-        // VALIDASI END
-
-        // VALIDASI KODE START
-        // $barangkode = Barang::where('kode', $request->kode)->first();
-        // if ($barangkode) {
-        //     $errors = [
-        //         'barang_sudah_ada' => ['Barang sudah ada']
-        //     ];
-        //     return response()->json(['error' => $errors], 400);
-        // }
-        // VALIDASI KODE END
-
-        // $request->manual = 0;
-        // if ($request->kode == null) {
-        //     $request->kode = str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
-        //     $request->manual = 1;
-        // }
-
-        // CARI BARANG START
-        // $barang = Barang::findOrFail($id);
-        // $barang->update([
-        //     'nama' => $request->nama,
-        //     'satuan_id' => $request->satuanid,
-        //     'gambar' => $request->src,
-        //     'manua;' => $request->manual,
-        // ]);
-
     }
 
     public function destroy($id)
@@ -277,8 +285,13 @@ class BarangController extends Controller
         if (Storage::exists($barang->gambar)) {
             Storage::delete($barang->gambar);
         }
+
+        // $barang->hargas()->keranjangs()->delete();
+        $barang->keranjangs()->delete();
+        // $barang->hargas->keranjangs()->delete();
         $barang->hargas()->delete();
         $barang->delete();
-        return redirect(route('barang-index'));
+
+        return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
     }
 }

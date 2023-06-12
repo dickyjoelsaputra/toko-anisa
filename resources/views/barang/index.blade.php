@@ -6,30 +6,30 @@
 </style>
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-bordered mb-3" id="barang-table" style="width: 100%">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nama</th>
-                        <th>Kode</th>
-                        <th>Manual</th>
-                        <th>Gambar</th>
-                        <th>Harga</th>
-                        <th>Satuan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-            </table>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered mb-3" id="barang-table" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nama</th>
+                    <th>Kode</th>
+                    <th>Manual</th>
+                    <th>Gambar</th>
+                    <th>Harga</th>
+                    <th>Satuan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+        </table>
 
-        </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('#barang-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -68,9 +68,18 @@
                         searchable: false,
                         render: function(data, type, full, meta) {
                             if (type === 'display') {
-                                return '<img src="' + '{{ asset('storage/') }}' + '/' +
-                                    data +
-                                    '" alt="" class="img-thumbnail" style="object-fit: contain; width: 100px; height: 100px;">';
+                                    var imageSrc = '{{ asset('storage/') }}' + '/' + data;
+                                    var http = new XMLHttpRequest();
+                                    http.open('HEAD', imageSrc, false);
+                                    http.send();
+
+                                    if (http.status === 200) {
+                                    // Gunakan gambar dari asset jika tersedia
+                                    return '<img src="' + imageSrc + '" alt="" class="img-thumbnail" style="object-fit: contain; width: 100px; height: 100px;">';
+                                    } else {
+                                    // Gunakan gambar fallback jika tidak tersedia di asset
+                                    return '<img src="' + data + '" alt="" class="img-thumbnail" style="object-fit: contain; width: 100px; height: 100px;">';
+                                    }
                             }
                             return data;
                         }
@@ -98,13 +107,7 @@
                             var buttons = '<div class="d-flex flex-column">';
                             buttons += '<a href="' + editUrl +
                                 '" class="btn btn-primary mb-2"><i class="fa fa-edit"></i> Edit</a>';
-                            buttons += '<form action="' + deleteUrl +
-                                '" method="POST" class="d-inline">';
-                            buttons += '@csrf';
-                            buttons += '@method('DELETE')';
-                            buttons +=
-                                '<button type="submit" class="btn btn-danger mb-2 w-100" onclick="return confirm(\'Apakah Anda yakin ingin menghapus barang ini?\')"><i class="fa fa-trash"></i> Delete</button>';
-                            buttons += '</form>';
+                            buttons += '<button class="btn btn-danger mb-2 w-100 delete-btn" data-url="' + deleteUrl + '"><i class="fa fa-trash"></i> Delete</button>';
                             buttons += '</div>';
                             return buttons;
                         }
@@ -120,6 +123,32 @@
                     });
                 });
             });
+
+
+            // AJAX DELETE
+            $('#barang-table').on('click', '.delete-btn', function() {
+                        var deleteUrl = $(this).data('url');
+
+                        if (confirm('Apakah Anda yakin ingin menghapus barang ini?')) {
+                        $.ajax({
+                        url: deleteUrl,
+                        type: 'POST',
+                        data: {
+                        '_method': 'DELETE',
+                        '_token': '{{ csrf_token() }}'
+                        },
+                        success: function(result) {
+                        // Refresh data pada tabel setelah berhasil menghapus
+                      $('#barang-table').DataTable().ajax.reload();
+                        console.log(result);
+                        },
+                        error: function(xhr) {
+                        // Tampilkan pesan error jika terjadi kesalahan
+                        console.log(xhr.responseText);
+                        }
+                        });
+                        }
+                    });
         });
-    </script>
+</script>
 @endsection

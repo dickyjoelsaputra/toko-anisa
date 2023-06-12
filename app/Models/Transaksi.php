@@ -11,9 +11,18 @@ class Transaksi extends Model
     use HasFactory;
 
 
-    protected $table = 'tansaksis';
+    protected $table = 'transaksis';
 
     protected $fillable = [
         'total', 'user_id'
     ];
+
+    public function keranjangs()
+    {
+        return $this->hasMany(Keranjang::class, 'transaksi_id', 'id');
+    }
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }
