@@ -239,8 +239,6 @@ class BarangController extends Controller
 
         $barang = Barang::findOrFail($id);
 
-        return dd([$request->src, $barang->gambar]);
-
         if ($request->src) {
             if ($request->src == asset('storage/' . $barang->gambar)) {
                 $request->src = $barang->gambar;
@@ -278,7 +276,7 @@ class BarangController extends Controller
             ]);
         }
 
-        return response()->json([$request->all(), $id]);
+        return response()->json(['status' => 'success', 'message' => 'Data berhasil diupdate']);
     }
 
     public function destroy($id)

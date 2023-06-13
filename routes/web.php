@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -21,6 +23,13 @@ use App\Http\Controllers\TransaksiController;
 |
 */
 
+// Route::get('/register', function () {
+//     $data['nama'] = 'a';
+//     $data['password'] = Hash::make('m');
+//     $data['role'] = 'y';
+//     // $user = User::create($data);
+// });
+
 Route::get('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate')->middleware('guest');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -29,6 +38,7 @@ Route::middleware('auth')->group(
     function () {
         // DASHBOARD
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard-index');
+        Route::get('/ajaxchart', [DashboardController::class, 'ajaxChart'])->name('dashboard-ajaxchart');
 
         // KASIR
         Route::get('/kasir', [KasirController::class, 'index'])->name('kasir-index');

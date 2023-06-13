@@ -3,6 +3,7 @@
 @section('title', 'Transaksi')
 
 @section('content')
+
 <!-- Default box -->
 <div class="card">
     <div class="card-body">
@@ -18,20 +19,34 @@
                     {{-- <th style="width: 20%;">Action</th> --}}
                 </tr>
             </thead>
+
+            <div class="form-inline">
+                <div class="mx-2">
+                    {{ $transaksis->withQueryString()->links() }}
+                </div>
+                <form action="" method="GET" id="search-form">
+                    {{-- <input class="" name="date" id="datepicker" width="276" /> --}}
+                    {{-- {{$date}} --}}
+                    <input class="form-control" value="{{ isset($date) ? $date : '' }}" type="date" id="date"
+                        name="date">
+                    <button type="submit" id="submit" class="btn btn-primary mx-2">Submit</button>
+                </form>
+            </div>
+
             <tbody>
                 @foreach ($transaksis as $transaksi)
                 <tr data-widget="expandable-table" aria-expanded="false">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $transaksi->created_at }}</td>
                     <td>{{ $transaksi->users->nama }}</td>
-                    <td>{{ $transaksi->total }}</td>
-                    <td>{{ $transaksi->uangpembeli }}</td>
-                    <td>{{ $transaksi->kembalian }}</td>
+                    <td class="transaksitotal">{{ $transaksi->total }}</td>
+                    <td class="uangpembeli">{{ $transaksi->uangpembeli }}</td>
+                    <td class="kembalian">{{ $transaksi->kembalian }}</td>
                 </tr>
                 <tr class="expandable-body d-none">
                     <td colspan="6">
                         <p>
-                        <table class="table table-dark table-bordered">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Nama Barang</th>
@@ -62,5 +77,21 @@
 @endsection
 
 @section('scripts')
-<script></script>
+<script>
+    // give mask to $transaksi total , uangpembeli, kembalian and also $keranjang hargas harga , keranjang_harga
+    $(document).ready(function () {
+        $('.transaksitotal , .uangpembeli,.kembalian').mask('000.000.000', { reverse: true });
+    });
+
+</script>
+
+<style>
+    .form-inline {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+</style>
+
 @endsection

@@ -208,6 +208,12 @@
                         $("#kode").val('');
                         $("#nama").val('');
                         $("#kode").focus();
+                        $("#gambar-preview").attr("src", '');
+                        $("#gambar-preview").hide();
+                        $('#image-container').hide();
+                        $('.minhar').each(function() {
+                            $(this).remove();
+                        });
                     },
                     error: function(xhr, status, error) {
                         var errorResponse = JSON.parse(xhr.responseText);

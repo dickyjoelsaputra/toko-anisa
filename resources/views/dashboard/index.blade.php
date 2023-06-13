@@ -43,42 +43,74 @@
     </div>
     <!-- /.col -->
 </div>
-<div class="chart">
-    <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+<div class="card mb-5">
+    <canvas id="chart">
+    </canvas>
 </div>
 @endsection
-
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
-    //-------------
-        //- BAR CHART -
-        //-------------
-        var barChartCanvas = $('#barChart').get(0).getContext('2d')
-        var barChartData = $.extend(true, {}, areaChartData)
-        var temp0 = areaChartData.datasets[0]
-        var temp1 = areaChartData.datasets[1]
-        barChartData.datasets[0] = temp1
-        barChartData.datasets[1] = temp0
-
-        var barChartOptions = {
-        responsive : true,
-        maintainAspectRatio : false,
-        datasetFill : false
-        }
-
-        new Chart(barChartCanvas, {
-        type: 'bar',
-        data: barChartData,
-        options: barChartOptions
-        })
-
-
     $(document).ready(function() {
-        // format mask laba kotor
-        $('#labakotor').mask('000.000.000', {
-            reverse: true
-        });
+        $.ajax({
+            url: '{{ route('dashboard-ajaxchart') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                console.log(response)
+                var labels = response.map(function(item) {
+                    return item.month;
+                });
 
+                var data = response.map(function(item) {
+                    return item.total;
+                });
+
+                var ctx = document.getElementById('chart');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total Transaksi',
+                            data: data,
+                            backgroundColor: 'rgba(54, 162, 235)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: function(value) {
+                            return value.toLocaleString();
+                            }
+                            }
+                            },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+      $('#labakotor').mask('000.000.000', {
+        reverse: true
+        });
     });
 </script>
 @endsection

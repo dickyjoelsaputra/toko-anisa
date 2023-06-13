@@ -6,13 +6,23 @@ use App\Models\Keranjang;
 use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Termwind\Components\Dd;
 
 class TransaksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transaksis = Transaksi::with(['keranjangs.barangs.hargas', 'users'])->latest()->get();
-        return view('transaksi.index', ['transaksis' => $transaksis]);
+        $date = $request->input('date');
+        // $date = $request->date;
+        // $date = $request->query('date');
+
+        $transaksis = Transaksi::with(['keranjangs.barangs.hargas', 'users'])
+            ->when($date, function ($query, $date) {
+                return $query->whereDate('created_at', $date);
+            })
+            ->orderByDesc('created_at')->paginate(2);
+
+        return view('transaksi.index', ['transaksis' => $transaksis, 'date' => $date]);
     }
 
     public function store(Request $request)
