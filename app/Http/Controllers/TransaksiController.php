@@ -20,7 +20,7 @@ class TransaksiController extends Controller
             ->when($date, function ($query, $date) {
                 return $query->whereDate('created_at', $date);
             })
-            ->orderByDesc('created_at')->paginate(2);
+            ->orderByDesc('created_at')->paginate(20);
 
         return view('transaksi.index', ['transaksis' => $transaksis, 'date' => $date]);
     }
