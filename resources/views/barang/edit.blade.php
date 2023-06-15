@@ -35,33 +35,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Harga</label>
-                        <div class="my-wrapper">
-                            @foreach ($barang->hargas as $harga)
-                            <div class="input-group mb-2 minhar">
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Harga</span>
-                                    </div>
-                                </span>
-                                <input value="{{ $harga->harga }}" name="harga[]" id="harga" type="text"
-                                    class="form-control harga" placeholder="Harga" />
-                                {{-- ICON --}}
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend" style="height: 100%">
-                                        <span class="input-group-text icon" id="basic-addon1"><i
-                                                class="fa fa-trash"></i>
-                                        </span>
-                                    </div>
-                                </span>
-                                {{-- ICON --}}
-                            </div>
-                            @endforeach
-                        </div>
-                        <div class="d-flex flex-column align-items-center">
-                            <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
-                                Harga</button>
-                        </div>
+                        <label>Harga Barang</label>
+                        <input id="harga" value="{{ $barang->harga }}" name="harga" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="col-sm">
@@ -113,8 +88,8 @@
             // =============== KAMERA START =======================
             // Akses kamera
             navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
+            video: { facingMode: 'environment' }
+            })
                 .then(function(stream) {
                     var video = document.getElementById('videoElement');
                     video.autoplay = true;
@@ -164,60 +139,16 @@
             // =============== KAMERA END ==========================
 
             // HARGA AWAL MASK
-            $('.harga').mask('000.000.000', {
+            $('#harga').mask('000.000.000', {
                 reverse: true
             });
-
-            // HARGA
-            $('#tambahharga').click(function() {
-                var inputGroup = $(`
-                <div class="input-group mb-2 minhar">
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Harga</span>
-                                    </div>
-                                </span>
-                                <input type="text" class="form-control harga" placeholder="Harga" />
-                                {{-- ICON --}}
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend" style="height: 100%">
-                                        <span class="input-group-text icon" id="basic-addon1"><i class="fa fa-trash"></i>
-                                        </span>
-                                    </div>
-                                </span>
-                                {{-- ICON --}}
-                            </div>
-                            `);
-                inputGroup.find('.harga').each(function() {
-                    $(this).mask('000.000.000', {
-                        reverse: true
-                    });
-                });
-
-
-                $(".my-wrapper").append(inputGroup);
-            });
-
-            // HAPUS HARGA
-            $(document).on('click', '.input-group-addon .icon', function() {
-                $(this).closest('.input-group').remove();
-            });
-
 
             $(document).on('click', '#proses', function(event) {
                 var kode = $("#kode").val();
                 var nama = $("#nama").val();
                 var satuanid = $('select[name="satuan"]').val();
-                var arrayminhar = [];
+                var harga = $("#harga").val();
                 var src = $("#gambar-preview").attr("src");
-
-                $('.minhar').each(function() {
-                    var harga = $(this).find('.harga').val();
-                    var data = {
-                        harga: harga
-                    };
-                    arrayminhar.push(data);
-                });
 
                 $.ajax({
                     url: '{{ route('barang-update', ['id' => $barang->id]) }}',
@@ -226,7 +157,7 @@
                         kode: kode,
                         nama: nama,
                         satuanid: satuanid,
-                        minhar: arrayminhar,
+                        harga: harga,
                         src: src
                     },
                     success: function(response) {

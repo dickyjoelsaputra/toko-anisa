@@ -15,17 +15,12 @@ class Barang extends Model
     protected $table = 'barangs';
 
     protected $fillable = [
-        'nama', 'kode', 'manual', 'gambar', 'satuan_id'
+        'nama', 'kode', 'manual', 'gambar', 'satuan_id', 'harga'
     ];
 
     public function satuans()
     {
         return $this->belongsTo(Satuan::class, 'satuan_id', 'id');
-    }
-
-    public function hargas()
-    {
-        return $this->hasMany(Harga::class, 'barang_id', 'id');
     }
 
     public function keranjangs()

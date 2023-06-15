@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('kode')->nullable();
             $table->boolean('manual');
+            $table->unsignedBigInteger('harga');
             $table->string('gambar')->nullable();
             $table->unsignedBigInteger('satuan_id');
             $table->foreign('satuan_id')->references('id')->on('satuans');

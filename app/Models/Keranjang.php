@@ -20,7 +20,6 @@ class Keranjang extends Model
         'keranjang_harga',
         'jumlah',
         'barang_id',
-        'harga_id',
         'transaksi_id',
     ];
 
@@ -28,10 +27,7 @@ class Keranjang extends Model
     {
         return $this->belongsTo(Barang::class, 'barang_id', 'id');
     }
-    public function hargas()
-    {
-        return $this->belongsTo(Harga::class, 'harga_id', 'id');
-    }
+
     public function transaksis()
     {
         return $this->belongsTo(Transaksi::class, 'transaksi_id', 'id');

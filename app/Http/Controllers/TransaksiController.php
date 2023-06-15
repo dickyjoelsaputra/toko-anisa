@@ -16,7 +16,7 @@ class TransaksiController extends Controller
         // $date = $request->date;
         // $date = $request->query('date');
 
-        $transaksis = Transaksi::with(['keranjangs.barangs.hargas', 'users'])
+        $transaksis = Transaksi::with(['keranjangs.barangs', 'users'])
             ->when($date, function ($query, $date) {
                 return $query->whereDate('created_at', $date);
             })
@@ -40,7 +40,7 @@ class TransaksiController extends Controller
                 'keranjang_harga' => intval(str_replace(".", "", $barang['total'])),
                 'jumlah' => $barang['qty'],
                 'barang_id' => $barang['id'],
-                'harga_id' => $barang['harga_id'],
+                'harga' => $barang['harga'],
                 'transaksi_id' => $transaksi->id,
             ]);
         }

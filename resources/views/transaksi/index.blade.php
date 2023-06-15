@@ -59,9 +59,9 @@
                                 @foreach ($transaksi->keranjangs as $keranjang)
                                 <tr>
                                     <td>{{ $keranjang->barangs->nama }}</td>
-                                    <td>{{ $keranjang->hargas->harga }}</td>
+                                    <td class="keranjang-barangs-harga">{{ $keranjang->barangs->harga }}</td>
                                     <td>{{ $keranjang->jumlah }}</td>
-                                    <td>{{ $keranjang->keranjang_harga }}</td>
+                                    <td class="keranjang-barangs-keranjang_harga">{{ $keranjang->keranjang_harga }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -80,7 +80,7 @@
 <script>
     // give mask to $transaksi total , uangpembeli, kembalian and also $keranjang hargas harga , keranjang_harga
     $(document).ready(function () {
-        $('.transaksitotal , .uangpembeli,.kembalian').mask('000.000.000', { reverse: true });
+        $('.transaksitotal , .uangpembeli, .kembalian , .keranjang-barangs-keranjang_harga , .keranjang-barangs-harga').mask('000.000.000', { reverse: true });
     });
 
 </script>

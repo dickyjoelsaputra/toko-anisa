@@ -50,16 +50,7 @@
                     },
                     {
                         data: 'manual',
-                        name: 'manual',
-                        render: function(data) {
-                            if (data === 0) {
-                                return 'Tidak';
-                            } else if (data === 1) {
-                                return 'Ya';
-                            } else {
-                                return '';
-                            }
-                        }
+                        name: 'manual'
                     },
                     {
                         data: 'gambar',
@@ -89,6 +80,13 @@
                         name: 'harga',
                         orderable: false,
                         searchable: false,
+                        render: function(data, type, full, meta) {
+                            if (type === 'display') {
+                            var formattedHarga = new Intl.NumberFormat('id-ID').format(data);
+                            return '<span class="harga">' + formattedHarga + '</span>';
+                            }
+                            return data;
+                            }
 
                     },
                     {
@@ -109,7 +107,7 @@
                             var buttons = '<div class="d-flex flex-column">';
                             buttons += '<a href="' + editUrl +
                                 '" class="btn btn-primary mb-2"><i class="fa fa-edit"></i> Edit</a>';
-                            if(data.manual === 1){
+                            if(data.manual == 1){
                                 buttons += '<a href="' + printUrl +
                                 '" class="btn btn-warning mb-2"><i class="fa fa-print" aria-hidden="true"></i> Print</a>';
                             }
@@ -121,15 +119,6 @@
 
                 ]
             });
-
-            $('#barang-table').on('draw.dt', function() {
-                $('.harga-tbl').each(function() {
-                    $(this).mask('000.000.000', {
-                        reverse: true
-                    });
-                });
-            });
-
 
             // AJAX DELETE
             $('#barang-table').on('click', '.delete-btn', function() {

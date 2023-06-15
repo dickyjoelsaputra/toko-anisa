@@ -15,7 +15,7 @@ class KasirController extends Controller
 
     public function getOne($id)
     {
-        $barang = Barang::with(['satuans', 'hargas'])->findOrFail($id);
+        $barang = Barang::with(['satuans'])->findOrFail($id);
 
         return response()->json(['results' => $barang]);
     }
@@ -29,7 +29,7 @@ class KasirController extends Controller
             ->where(function ($query) use ($scan) {
                 $query->where('nama', 'like', "$scan%")
                     ->orWhere('kode', 'like', "$scan%");
-            })->with(['satuans', 'hargas'])
+            })->with(['satuans'])
             ->first();
 
         return response()->json(['results' => $barang, 'results2' => $dataArray]);
@@ -44,11 +44,8 @@ class KasirController extends Controller
             ->where(function ($query) use ($searchText) {
                 $query->where('nama', 'like', "$searchText%")
                     ->orWhere('kode', 'like', "$searchText%");
-            })->with(['satuans', 'hargas'])
+            })->with(['satuans'])
             ->get();
-        // ->where('nama', 'like', "$searchText%")
-        // ->orWhere('kode', 'like', "$searchText%")
-        // ->get();
 
         return response()->json(['results' => $barang, 'results2' => $dataArray]);
     }

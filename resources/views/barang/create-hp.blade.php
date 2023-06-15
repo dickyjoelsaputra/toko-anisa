@@ -30,43 +30,35 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Harga</label>
-            <div class="my-wrapper">
-                <div class="input-group mb-2 minhar">
-                    <span class="input-group-addon">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Harga</span>
-                        </div>
-                    </span>
-                    <input style="width: 100px" name="harga[]" id="harga" type="text" class="form-control harga"
-                        placeholder="Harga" />
-                    {{-- ICON --}}
-                    <span class="input-group-addon">
-                        <div class="input-group-prepend" style="height: 100%">
-                            <span class="input-group-text icon" id="basic-addon1"><i class="fa fa-trash"></i>
-                            </span>
-                        </div>
-                    </span>
-                    {{-- ICON --}}
-                </div>
-            </div>
-            <div class="d-flex flex-column align-items-center">
-                <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah Harga</button>
-            </div>
-        </div>
-        <div class="text-center">
-            <div class="image-container" id="image-container">
-                <img src="" name="gambar" id="gambar-preview" style="display: none;" alt="Preview Gambar"
-                    class="mx-auto">
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Gambar Barang</label>
-            <input class="form-control" type="file" id="gambar-input">
+            <label>Harga Barang</label>
+            <input id="harga" name="harga" type="text" class="form-control">
         </div>
 
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Akses Kamera</h3>
+                <div id="cameraView" class="camera-container">
+                    <video id="videoElement"></video>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    <button type="button" id="captureBtn" class="btn btn-primary mt-3">Ambil
+                        Foto</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Hasil Jepretan</h3>
+                <div id="photoPreview" class="photo-container"></div>
+                <div class="d-flex flex-column align-items-center">
+                    <button type="button" id="deleteBtn" class="btn btn-danger mt-3 mx-auto"
+                        style="display: none;">Hapus
+                        Foto</button>
+                </div>
+            </div>
+        </div>
+
+
         <hr>
-        <div class="d-flex flex-column align-items-center">
+        <div class="d-flex flex-column align-items-center mb-5">
             <button type="button" id="prosesbarang" class="btn btn-success mt-3">
                 Proses Barang
             </button>
@@ -78,7 +70,8 @@
 @section('scripts')
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
-    function playSuccessSound() {
+    // START SCANNER
+        function playSuccessSound() {
             const successSound = new Audio("{{ asset('assets/sound/mixkit-game-notification-wave-alarm-987.wav') }}");
             console.log(successSound);
             successSound.play();
@@ -105,8 +98,64 @@
             false);
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
+        // END SCANNER
+
+
+        // =============== KAMERA START =======================
+        // Akses kamera
+        navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+        })
+        .then(function(stream) {
+        var video = document.getElementById('videoElement');
+        video.autoplay = true;
+        video.srcObject = stream;
+        })
+        .catch(function(error) {
+        console.log('Error accessing camera: ' + error.message);
+        });
+
+        // Ambil foto
+        $('#captureBtn').click(function() {
+        var video = document.getElementById('videoElement');
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+
+        var width = video.videoWidth;
+        var height = video.videoHeight;
+
+        var squareSize = Math.min(width, height);
+
+        canvas.width = squareSize;
+        canvas.height = squareSize;
+
+        var xOffset = (width - squareSize) / 2;
+        var yOffset = (height - squareSize) / 2;
+
+        context.drawImage(video, xOffset, yOffset, squareSize, squareSize, 0, 0, squareSize,
+        squareSize);
+
+        var imgData = canvas.toDataURL();
+        var img = document.createElement('img');
+        img.src = imgData;
+        img.classList.add('img-fluid');
+        img.classList.add('myImage');
+        $('#photoPreview').show();
+        $('#photoPreview').empty().append(img);
+        $('#deleteBtn').show();
+        });
+
+        // Hapus foto
+        $('#deleteBtn').click(function() {
+            $('#photoPreview').hide();
+            $('#deleteBtn').hide();
+        });
+
+        // =============== KAMERA END ==========================
+
+
         $(document).ready(function() {
-            $('.harga').mask('000.000.000', {
+            $('#harga').mask('000.000.000', {
                 reverse: true
             });
 
@@ -115,83 +164,23 @@
                 theme: 'bootstrap4'
             })
 
+            $('#photoPreview').hide();
+
             $("#kode").focus();
 
             $('#image-container').hide();
 
             // PREWIVEW GAMBAR
 
-            $('#gambar-input').change(function() {
-                let file = $(this)[0].files[0];
-                if (file) {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        // Menampilkan preview gambar
-                        $('#gambar-preview').attr('src', e.target.result);
-                        $('#gambar-preview').show();
-                        $('#image-container').show();
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    $('#gambar-preview').attr('src', '');
-                    $('#image-container').hide();
-                }
-            });
-
-            // HARGA DAN MIN
-            $('#tambahharga').click(function() {
-                var inputGroup = $(`
-                    <div class="input-group mb-2 minhar">
-                        <span class="input-group-addon">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">Harga</span>
-                            </div>
-                        </span>
-                        <input style="width: 100px" name="harga[]" id="harga" type="text" class="form-control harga"
-                            placeholder="Harga" />
-                        {{-- ICON --}}
-                        <span class="input-group-addon">
-                            <div class="input-group-prepend" style="height: 100%">
-                                <span class="input-group-text icon" id="basic-addon1"><i class="fa fa-trash"></i>
-                                </span>
-                            </div>
-                        </span>
-                        {{-- ICON --}}
-                    </div>
-                            `);
-                inputGroup.find('.harga').each(function() {
-                    $(this).mask('000.000.000', {
-                        reverse: true
-                    });
-                });
-
-                $(".my-wrapper").append(inputGroup);
-            });
-
-            // HAPUS HARGA
-            $(document).on('click', '.input-group-addon .icon', function() {
-                $(this).closest('.input-group').remove();
-            });
-
             $(document).on('click', '#prosesbarang', function(event) {
                 var kode = $("#kode").val();
                 var nama = $("#nama").val();
                 var satuanid = $('select[name="satuan"]').val();
-                var arrayminhar = [];
-                var src = $("#gambar-preview").attr("src");
-                if (src == undefined) {
-                src = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg";
-                }
+                // var arrayminhar = [];
+                var harga = $("#harga").val();
+                var src = $(".myImage").attr("src");
 
-                $('.minhar').each(function() {
-                    var harga = $(this).find('.harga').val();
-                    var data = {
-                        harga: harga
-                    };
-                    arrayminhar.push(data);
-                });
-
-                // console.log(kode, nama, satuanid, arrayminhar, src);
+                console.log(kode, nama, satuanid, harga, src);
                 $.ajax({
                     url: '{{ route('barang-store-hp') }}',
                     method: 'POST',
@@ -199,7 +188,7 @@
                         kode: kode,
                         nama: nama,
                         satuanid: satuanid,
-                        minhar: arrayminhar,
+                        harga: harga,
                         src: src
                     },
                     success: function(response) {
@@ -208,12 +197,10 @@
                         $("#kode").val('');
                         $("#nama").val('');
                         $("#kode").focus();
+                        $("#harga").val('');
                         $("#gambar-preview").attr("src", '');
-                        $("#gambar-preview").hide();
-                        $('#image-container').hide();
-                        $('.minhar').each(function() {
-                            $(this).remove();
-                        });
+                        $('#photoPreview').hide();
+                        $('#photoPreview').empty();
                     },
                     error: function(xhr, status, error) {
                         var errorResponse = JSON.parse(xhr.responseText);
@@ -341,5 +328,44 @@
         height: 100%;
         object-fit: cover;
     }
+
+    /* KAMERA START */
+
+    .camera-container {
+        position: relative;
+        padding-bottom: 100%;
+        /* Mengubah proporsi menjadi 1:1 */
+        height: 0;
+        overflow: hidden;
+    }
+
+    .camera-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .photo-container {
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+        /* Mengubah proporsi menjadi 1:1 */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .photo-container img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: auto;
+    }
+
+    /* KAMERA END */
 </style>
 @endsection

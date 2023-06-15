@@ -41,7 +41,7 @@
                                 <th>Nama</th>
                                 <th>Satuan</th>
                                 <th style="width: 13%;">Qty</th>
-                                <th>Harga (pcs)</th>
+                                <th>Harga</th>
                                 <th>Total Harga</th>
                                 <th>Aksi</th>
                             </tr>
@@ -143,10 +143,6 @@
                         return $("#scanner").val('');
                     }
 
-                    var hargaPertama = result.hargas[0]
-                    console.log(result)
-                    dataArray.push(result.id);
-
                     var newRow = `<tr>
                         <td>${result.id}</td>
                         <td><img id="gambar" src="" alt="" class="img-thumbnail" style="object-fit: contain; width: 100px; height: 100px;"></td>
@@ -155,7 +151,7 @@
                         <td>${result.satuans.alias}</td>
                         <td style="width: 50px;"><input style="width: 50px;" type="text" id="quantity" class="qty" name="quantity" value="1"
                                 min="1"></td>
-                        <td class="hargaPertama" data-id=${hargaPertama.id}>${hargaPertama.harga}</td>
+                        <td class="harga">${result.harga}</td>
                         <td class="total-harga"></td>
                         <td><button class="btn btn-danger button-hapus">Hapus</button></td>
                     </tr>`;
@@ -175,7 +171,7 @@
 
                     $("table tbody").prepend(newRow);
 
-                    $(".hargaPertama").mask('000.000.000', {
+                    $(".harga").mask('000.000.000', {
                     reverse: true
                     });
 
@@ -229,7 +225,7 @@
                         console.log(xhr.responseText);
                     }
                 });
-                }, 250);
+                }, 200);
 
                 $(this).data("timeout", timeout);
             });
@@ -247,7 +243,7 @@
                         $(".dropdown-menu-kasir").hide();
                         $("#inputscan").focus();
                         var result = response.results
-                        var hargaPertama = result.hargas[0]
+                        var harga = result.harga
                         // console.log(hargaPertama)
                         dataArray.push(result.id);
 
@@ -258,7 +254,7 @@
                             <td>${result.nama}</td>
                             <td>${result.satuans.alias}</td>
                             <td style="width: 50px;"><input style="width: 50px;" type="text" id="quantity" class="qty" name="quantity" value="1" min="1"></td>
-                            <td class="hargaPertama" data-id=${hargaPertama.id}>${hargaPertama.harga}</td>
+                            <td class="harga">${result.harga}</td>
                             <td class="total-harga"></td>
                             <td><button class="btn btn-danger button-hapus">Hapus</button></td>
                             </tr>`;
@@ -278,7 +274,7 @@
 
                         $("table tbody").prepend(newRow);
 
-                        $(".hargaPertama").mask('000.000.000', {
+                        $(".harga").mask('000.000.000', {
                         reverse: true
                         });
 
@@ -384,13 +380,13 @@
             $("table tbody tr").each(function(index, tr) {
             var id = $(this).find("td:eq(0)").text();
             var qty = $(this).find("td:eq(5) input").val();
-            var harga_id = $(this).find("td:eq(6)").data("id");
+            var harga = $(this).find("td:eq(6)").val();
             var totalHarga = $(this).find("td:eq(7)").text();
             var obj = {
                 id: id,
                 qty: qty,
                 total: totalHarga,
-                harga_id: harga_id,
+                harga: harga,
             };
             dataTransaksi.push(obj);
             });

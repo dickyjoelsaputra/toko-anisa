@@ -21,6 +21,7 @@
                         <label>Nama Barang</label>
                         <input id="nama" name="nama" type="text" class="form-control">
                     </div>
+
                     <div class="form-group">
                         <label>Satuan Barang</label>
                         <select class="form-control select2" style="width: 100%;" name="satuan">
@@ -32,31 +33,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Harga</label>
-                        <div class="my-wrapper">
-                            <div class="input-group mb-2 minhar">
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Harga</span>
-                                    </div>
-                                </span>
-                                <input name="harga[]" id="harga" type="text" class="form-control harga"
-                                    placeholder="Harga" />
-                                {{-- ICON --}}
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend" style="height: 100%">
-                                        <span class="input-group-text icon" id="basic-addon1"><i
-                                                class="fa fa-trash"></i>
-                                        </span>
-                                    </div>
-                                </span>
-                                {{-- ICON --}}
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column align-items-center">
-                            <button type="button" id="tambahharga" class="btn btn-primary mt-3 harga-minal">Tambah
-                                Harga</button>
-                        </div>
+                        <label>Harga Barang</label>
+                        <input id="harga" name="harga" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="col-sm">
@@ -110,9 +88,10 @@
 <script>
     $(document).ready(function() {
 
-            $('.harga').mask('000.000.000', {
+            $('#harga').mask('000.000.000', {
                 reverse: true
             });
+
             $("#kode").focus();
 
             // Select2
@@ -122,8 +101,8 @@
             // =============== KAMERA START =======================
             // Akses kamera
             navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
+                video: { facingMode: 'environment' }
+            })
                 .then(function(stream) {
                     var video = document.getElementById('videoElement');
                     video.autoplay = true;
@@ -171,56 +150,12 @@
 
             // =============== KAMERA END ==========================
 
-            // UNTUK TAMBAH DAN HARGA
-            $('#tambahharga').click(function() {
-                var inputGroup = $(`
-                <div class="input-group mb-2 minhar">
-
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">Harga</span>
-                                    </div>
-                                </span>
-                                <input type="text" class="form-control harga" placeholder="Harga" />
-                                {{-- ICON --}}
-                                <span class="input-group-addon">
-                                    <div class="input-group-prepend" style="height: 100%">
-                                        <span class="input-group-text icon" id="basic-addon1"><i class="fa fa-trash"></i>
-                                        </span>
-                                    </div>
-                                </span>
-                                {{-- ICON --}}
-                            </div>
-                            `);
-
-                inputGroup.find('.harga').each(function() {
-                    $(this).mask('000.000.000', {
-                        reverse: true
-                    });
-                });
-
-                $(".my-wrapper").append(inputGroup);
-            });
-
-            // HAPUS HARGA
-            $(document).on('click', '.input-group-addon .icon', function() {
-                $(this).closest('.input-group').remove();
-            });
-
             $(document).on('click', '#tambah', function(event) {
                 var kode = $("#kode").val();
                 var nama = $("#nama").val();
                 var satuanid = $('select[name="satuan"]').val();
                 var satuanvalue = $('select[name="satuan"] option:selected').text();
-                var arrayminhar = [];
-
-                $('.minhar').each(function() {
-                    var harga = $(this).find('.harga').val();
-                    var data = {
-                        harga: harga
-                    };
-                    arrayminhar.push(data);
-                });
+                var harga = $("#harga").val();
 
                 var src = $(".myImage").attr("src"); // Mendapatkan nilai atribut 'src'
                 console.log(src)
@@ -249,16 +184,7 @@
                                 <h5 class="card-title"><b>Satuan : </b>${satuanvalue}</h5>
                             </li>
                             <li class="list-group-item">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Harga</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${arrayminhar.map(item => `<tr><td>${item.harga}</td></tr>`).join('')}
-                                    </tbody>
-                                </table>
+                                <h5 class="card-title"><b>Harga: </b>${harga}</h5>
                             </li>
                         </ul>
                     </div>
@@ -270,7 +196,7 @@
                     nama: nama,
                     satuanid: satuanid,
                     satuanvalue: satuanvalue,
-                    minhar: arrayminhar,
+                    harga: harga,
                     src: src,
                     filename: fileName
                 }
@@ -285,8 +211,7 @@
                 $("#kode").val('');
                 $("#nama").val('');
                 $('select[name="satuan"]').val('').trigger('change');
-                $('.harga').val('');
-                $('.minhar:not(:first)').remove();
+                $('#harga').val('');
                 $('#photoPreview').empty();
                 $('#deleteBtn').hide();
             });
@@ -300,8 +225,6 @@
                 finaldata = finaldata.filter(function(item) {
                     return item.src !== src;
                 });
-
-                // console.log(finaldata);
             });
 
             var finaldata = []
@@ -418,10 +341,10 @@
     }
 
     .toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
     }
 
     /* TOAST END */
@@ -500,7 +423,5 @@
         align-items: center;
         justify-content: center;
     }
-
-
 </style>
 @endsection

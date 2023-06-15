@@ -23,12 +23,12 @@ use App\Http\Controllers\TransaksiController;
 |
 */
 
-// Route::get('/register', function () {
-//     $data['nama'] = 'a';
-//     $data['password'] = Hash::make('m');
-//     $data['role'] = 'y';
-//     // $user = User::create($data);
-// });
+Route::get('/register', function () {
+    $data['nama'] = 'admin2';
+    $data['password'] = Hash::make('123QWEASD');
+    $data['role'] = 'admin';
+    $user = User::create($data);
+});
 
 Route::get('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
 Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate')->middleware('guest');
